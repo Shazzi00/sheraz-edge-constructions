@@ -13,9 +13,10 @@ export default function Navbar() {
     { name: 'About Us', href: '/about' },
     { name: 'Services', href: '/services' },
     { name: 'Our Projects', href: '/projects' },
-
     { name: 'Contact Us', href: '/contact' },
   ];
+
+  const isAdminActive = pathname?.startsWith('/admin');
 
   return (
     <>
@@ -34,29 +35,51 @@ export default function Navbar() {
             SHERAZ <span className="text-amber-400">Constructions</span>
           </Link>
 
-          {/* Desktop Menu Links */}
-          <ul className="hidden md:flex space-x-6 text-xs font-bold uppercase tracking-wide">
-            {navLinks.map((link) => {
-              const isActive =
-                pathname === link.href ||
-                (link.href !== '/' && pathname?.startsWith(link.href));
+          {/* Desktop Menu Links & Admin Icon */}
+          <div className="hidden md:flex items-center space-x-6">
+            <ul className="flex space-x-6 text-xs font-bold uppercase tracking-wide items-center">
+              {navLinks.map((link) => {
+                const isActive =
+                  pathname === link.href ||
+                  (link.href !== '/' && pathname?.startsWith(link.href));
 
-              return (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className={`transition-colors py-1 border-b-2 ${
-                      isActive
-                        ? 'text-amber-400 border-amber-400 font-extrabold'
-                        : 'text-slate-100 border-transparent hover:text-amber-400'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+                return (
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className={`transition-colors py-1 border-b-2 ${
+                        isActive
+                          ? 'text-amber-400 border-amber-400 font-extrabold'
+                          : 'text-slate-100 border-transparent hover:text-amber-400'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {/* Admin Login Icon Link */}
+            <Link
+              href="/admin/login"
+              title="Admin Portal"
+              className={`p-2 rounded-full border transition-all duration-200 ${
+                isAdminActive
+                  ? 'bg-amber-400 text-slate-950 border-amber-400'
+                  : 'text-slate-100 border-white/20 hover:border-amber-400 hover:text-amber-400 hover:bg-white/5'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </Link>
+          </div>
 
           {/* Mobile Hamburger Toggle */}
           <button
@@ -97,6 +120,27 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
+            {/* Mobile Admin Link */}
+            <div className="pt-2 border-t border-white/10">
+              <Link
+                href="/admin/login"
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center space-x-2 text-xs font-bold uppercase tracking-wider transition-colors ${
+                  isAdminActive ? 'text-amber-400 font-extrabold' : 'text-slate-100 hover:text-amber-400'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                <span>Admin Login</span>
+              </Link>
+            </div>
           </div>
         )}
       </nav>
