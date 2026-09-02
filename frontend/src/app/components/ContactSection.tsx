@@ -27,7 +27,8 @@ export default function ContactSection() {
     setErrorMsg('');
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/contact-messages', {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://sheraz-constructions-api.vercel.app/api';
+      const res = await fetch(`${API_BASE}/contact-messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

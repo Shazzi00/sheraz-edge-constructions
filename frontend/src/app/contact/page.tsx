@@ -1,22 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 
-export default function ContactPage() {
+export default function ContactSection() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     subject: '',
-    message: ''
+    message: '',
   });
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -27,7 +27,8 @@ export default function ContactPage() {
     setErrorMsg('');
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/contact-messages', {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://sheraz-constructions-api.vercel.app/api';
+      const res = await fetch(`${API_BASE}/contact-messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,53 +40,49 @@ export default function ContactPage() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setSuccessMsg(data.message);
-        setFormData({ name: '', email: '', phone: '', subject: '', message: '' }); // Reset form
+        setSuccessMsg(data.message || 'Thank you! Your message has been sent successfully.');
+        setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       } else {
         setErrorMsg(data.message || 'Failed to send message. Please try again.');
       }
     } catch (err) {
-      setErrorMsg('Server connection failed. Ensure the backend is running.');
+      setErrorMsg('Server connection failed. Ensure Laravel backend is running.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 flex flex-col justify-between pt-20">
-      <Navbar />
-
-      <section className="py-16 sm:py-24 px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto w-full">
-        <div className="text-center space-y-3 max-w-2xl mx-auto mb-16">
-          <span className="text-pink-500 font-bold text-xs sm:text-sm uppercase tracking-wider block">
-            GET IN TOUCH
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+    <section className="bg-slate-50 py-16 sm:py-24 px-6 sm:px-8 lg:px-12">
+      <div className="max-w-7xl mx-auto space-y-12">
+        {/* Header */}
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
             Contact Us
-          </h1>
+          </h2>
           <p className="text-slate-600 text-xs sm:text-sm font-normal">
             Our dedicated experts are here to help you with any of your questions, contact us by filling out the form below and we will be in touch shortly.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
           {/* Contact Info Sidebar */}
           <aside className="lg:col-span-4 bg-white p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-8">
             <div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Call Us</h3>
-              <p className="text-sm text-slate-600">(888-000-0000)</p>
+              <p className="text-sm text-slate-600">(+92467439117)</p>
               <p className="text-sm text-slate-600">(222-123-12345)</p>
             </div>
             <div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">You can write us:</h3>
-              <p className="text-sm text-slate-600">example@example.com</p>
+              <p className="text-sm text-slate-600">sherazasadkhan123@gmail.com</p>
               <p className="text-sm text-slate-600">info@example.com</p>
             </div>
             <div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Address:</h3>
-              <p className="text-sm text-slate-600">B-18X, Rajaji Puram</p>
-              <p className="text-sm text-slate-600">Lucknow, Uttar Pradesh, 226017</p>
+              <p className="text-sm text-slate-600">B-18X, Sheraz Edge Constructions</p>
+              <p className="text-sm text-slate-600">example , 226017</p>
+              <p className="text-sm text-slate-600">0522400XXXX</p>
             </div>
           </aside>
 
@@ -113,7 +110,7 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Enter Your Name"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -125,7 +122,7 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Enter Your Email"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500"
                   />
                 </div>
               </div>
@@ -139,7 +136,7 @@ export default function ContactPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Phone No."
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -151,7 +148,7 @@ export default function ContactPage() {
                     value={formData.subject}
                     onChange={handleChange}
                     placeholder="Subject"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500"
                   />
                 </div>
               </div>
@@ -165,7 +162,7 @@ export default function ContactPage() {
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Your Message"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
                 />
               </div>
 
@@ -179,9 +176,7 @@ export default function ContactPage() {
             </form>
           </article>
         </div>
-      </section>
-
-      <Footer />
-    </main>
+      </div>
+    </section>
   );
 }
