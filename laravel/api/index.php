@@ -10,6 +10,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS
     exit();
 }
 
+// Force Laravel to treat every request as an API call (prevents HTML view rendering on errors)
+$_SERVER['HTTP_ACCEPT'] = 'application/json';
+
 ini_set('display_errors', '0');
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
 
@@ -22,7 +25,6 @@ foreach (['/framework/views', '/framework/sessions', '/framework/cache', '/logs'
 }
 
 putenv('VIEW_COMPILED_PATH=' . $storagePath . '/framework/views');
-putenv('LOG_CHANNEL=stderr');
-putenv('SESSION_DRIVER=cookie');
 
+// Forward Vercel serverless requests to Laravel entrypoint
 require __DIR__ . '/../public/index.php';
