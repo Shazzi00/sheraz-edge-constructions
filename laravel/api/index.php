@@ -3,6 +3,16 @@
 $_SERVER['SCRIPT_NAME'] = '/index.php';
 $_SERVER['SCRIPT_FILENAME'] = __DIR__ . '/../public/index.php';
 
+// Redirect package auto-discovery manifests to writable /tmp
+putenv('APP_PACKAGES_CACHE=/tmp/packages.php');
+putenv('APP_SERVICES_CACHE=/tmp/services.php');
+putenv('APP_CONFIG_CACHE=/tmp/config.php');
+
+$_ENV['APP_PACKAGES_CACHE'] = '/tmp/packages.php';
+$_ENV['APP_SERVICES_CACHE'] = '/tmp/services.php';
+$_ENV['APP_CONFIG_CACHE'] = '/tmp/config.php';
+
+// Preflight OPTIONS handling
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -25,8 +35,13 @@ foreach (['/framework/views', '/framework/sessions', '/framework/cache', '/logs'
 try {
     require __DIR__ . '/../public/index.php';
 } catch (\Throwable $e) {
+    error_log("Laravel Vercel Error: " . $e->getMessage());
+
+    if (!headers_sent()) {
+        header("Access-Control-Allow-Origin: *");
+        header("Content-Type: application/json");
+    }
     http_response_code(500);
-    header('Content-Type: application/json');
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage()
