@@ -60,9 +60,9 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? [
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', ''),
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-            ] : [],
+    1012 => env('MYSQL_ATTR_SSL_CA', ''), // 1012 represents PDO::MYSQL_ATTR_SSL_CA
+    1014 => false,                         // 1014 represents PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT
+] : [],
         ],
 
         'mariadb' => [
