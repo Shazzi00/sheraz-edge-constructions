@@ -59,10 +59,10 @@ return [
     'prefix_indexes' => true,
     'strict' => true,
     'engine' => null,
-    'options' => extension_loaded('pdo_mysql') ? [
-    1012 => env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt'),
-    1014 => false,
-] : [],
+   'options' => extension_loaded('pdo_mysql') ? [
+            1012 => file_exists('/tmp/cacert.pem') ? '/tmp/cacert.pem' : env('MYSQL_ATTR_SSL_CA', ''),
+            1014 => false,
+        ] : [],
 ],
 
         'mariadb' => [

@@ -3,16 +3,32 @@
 $_SERVER['SCRIPT_NAME'] = '/index.php';
 $_SERVER['SCRIPT_FILENAME'] = __DIR__ . '/../public/index.php';
 
-// Redirect package auto-discovery manifests to writable /tmp
-putenv('APP_PACKAGES_CACHE=/tmp/packages.php');
-putenv('APP_SERVICES_CACHE=/tmp/services.php');
-putenv('APP_CONFIG_CACHE=/tmp/config.php');
+// Bootstrap SSL CA Certificate for TiDB Cloud Serverless
+$caPath = '/tmp/cacert.pem';
+if (!file_exists($caPath)) {
+    $systemPaths = [
+        '/etc/pki/tls/certs/ca-bundle.crt',
+        '/etc/ssl/certs/ca-certificates.crt',
+        '/etc/ssl/cert.pem',
+        '/etc/pki/tls/cert.pem',
+    ];
+    $copied = false;
+    foreach ($systemPaths as $path) {
+        if (file_exists($path) && filesize($path) > 0) {
+            @copy($path, $caPath);
+            $copied = true;
+            break;
+        }
+    }
+    if (!$copied) {
+        $pem = @file_get_contents('https://curl.se/ca/cacert.pem');
+        if ($pem) {
+            @file_put_contents($caPath, $pem);
+        }
+    }
+}
 
-$_ENV['APP_PACKAGES_CACHE'] = '/tmp/packages.php';
-$_ENV['APP_SERVICES_CACHE'] = '/tmp/services.php';
-$_ENV['APP_CONFIG_CACHE'] = '/tmp/config.php';
-
-// Preflight OPTIONS handling
+// CORS preflight handling
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -25,6 +41,7 @@ error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 ini_set('display_errors', '0');
 $_SERVER['HTTP_ACCEPT'] = 'application/json';
 
+// Create writable storage paths
 $storagePath = '/tmp/storage';
 foreach (['/framework/views', '/framework/sessions', '/framework/cache', '/logs'] as $dir) {
     if (!is_dir($storagePath . $dir)) {
