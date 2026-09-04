@@ -1,5 +1,9 @@
 <?php
 
+// Fix Vercel subfolder routing so Laravel does not strip the /api path prefix
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['SCRIPT_FILENAME'] = __DIR__ . '/../public/index.php';
+
 // Silence PHP 8.5 deprecation notices and disable inline display errors
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 ini_set('display_errors', '0');
@@ -16,7 +20,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS
 
 $_SERVER['HTTP_ACCEPT'] = 'application/json';
 
-// Redirect Laravel storage to writable /tmp directory for Vercel serverless
+// Redirect Laravel storage paths to Vercel's writable /tmp directory
 $storagePath = '/tmp/storage';
 foreach (['/framework/views', '/framework/sessions', '/framework/cache', '/logs'] as $dir) {
     if (!is_dir($storagePath . $dir)) {
